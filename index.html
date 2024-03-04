@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Frontend</title>
+</head>
+<body>
+    <h1>Function Frontend</h1>
+
+    <label for="value1Input">Set Value 1:</label>
+    <input type="number" id="value1Input" placeholder="Enter a number">
+    <button onclick="setValue1()">Set Value 1</button>
+
+    <br>
+
+    <label for="value2Input">Set Value 2:</label>
+    <input type="number" id="value2Input" placeholder="Enter another number">
+    <button onclick="setValue2()">Set Value 2</button>
+
+    <br>
+
+    <label for="messageInput">Set Message:</label>
+    <input type="text" id="messageInput" placeholder="Enter a message">
+    <button onclick="setMessage()">Set Message</button>
+
+    <br>
+
+    <h2>Current Values</h2>
+    <p>Value 1: <span id="currentValue1"></span></p>
+    <p>Value 2: <span id="currentValue2"></span></p>
+    <p>Message: <span id="currentMessage"></span></p>
+
+    <script>
+        // Connect to the blockchain using web3.js or ethers.js
+        // Replace the following placeholders with your actual contract address and ABI
+        const contractAddress = 'YOUR_CONTRACT_ADDRESS';
+        const contractAbi = [/* YOUR CONTRACT ABI */];
+        
+        const web3 = new Web3(window.ethereum);
+
+        const contractInstance = new web3.eth.Contract(contractAbi, contractAddress);
+
+        function setValue1() {
+            const newValue = document.getElementById('value1Input').value;
+            contractInstance.methods.setValue1(newValue).send({ from: 'YOUR_SENDER_ADDRESS' })
+                .on('receipt', function(receipt){
+                    updateValues();
+                });
+        }
+
+        function setValue2() {
+            const newValue = document.getElementById('value2Input').value;
+            contractInstance.methods.setValue2(newValue).send({ from: 'YOUR_SENDER_ADDRESS' })
+                .on('receipt', function(receipt){
+                    updateValues();
+                });
+        }
+
+        function setMessage() {
+            const newMessage = document.getElementById('messageInput').value;
+            contractInstance.methods.setMessage(newMessage).send({ from: 'YOUR_SENDER_ADDRESS' })
+                .on('receipt', function(receipt){
+                    updateValues();
+                });
+        }
+
+        async function updateValues() {
+            const currentValue1 = await contractInstance.methods.value1().call();
+            const currentValue2 = await contractInstance.methods.value2().call();
+            const currentMessage = await contractInstance.methods.message().call();
+            document.getElementById('currentValue1').innerText = currentValue1;
+            document.getElementById('currentValue2').innerText = currentValue2;
+            document.getElementById('currentMessage').innerText = currentMessage;
+        }
+
+        // Call updateValues when the page loads
+        updateValues();
+    </script>
+</body>
+</html>
